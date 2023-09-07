@@ -1,0 +1,55 @@
+{
+  "pokemons": [
+    {
+      "id": 25,
+      "name": "Pikachu",
+      "evolution": {
+        "1": "Raichu"
+      },
+      "categorie": "5C",
+      "skills": {
+        "1": "test1",
+        "2": "test",
+        "3": "test",
+        "4": "test"
+      },
+      "artworkPictures": "assets/artwork/213px-Pikachu-RFVF.png"
+    },
+    {
+      "id": 172,
+      "name": "Pichu",
+      "categorie": "5C",
+      "skills": {
+        "1": "test1",
+        "2": "test",
+        "3": "test",
+        "4": "test"
+      },
+      "artworkPictures": "assets/artwork/175px-Pichu-RFVF.png"
+    },
+    {
+      "id": 4,
+      "name": "Salamèche",
+      "categorie": "5C",
+      "skills": {
+        "1": "test1",
+        "2": "test",
+        "3": "test",
+        "4": "test"
+      },
+      "artworkPictures": "assets/artwork/177px-Salamèche-RFVF.png"
+    },
+    {
+      "id": 128,
+      "name": "Tauros",
+      "categorie": "25C",
+      "skills": {
+        "1": "test1",
+        "2": "test",
+        "3": "test",
+        "4": "test"
+      },
+      "artworkPictures": "assets/artwork/210px-Tauros-RFVF.png"
+    }
+  ]
+}

@@ -3,70 +3,70 @@
     {
       "id": 25,
       "name": "Pikachu",
-      "evolution": {
-        "1": "Raichu"
-      },
       "categorie": "5C",
       "skills": {
-        "1": "test1",
-        "2": "test",
-        "3": "test",
-        "4": "test"
+        "1": {
+          "type": "CONSOMMABLE",
+          "approachable": 3,
+          "duration": 2,
+          "gap": 3,
+          "usable": false
+        },
+        "2": {
+          "type": "CONSOMMABLE",
+          "approachable": 7,
+          "duration": 3,
+          "gap": 7,
+          "evolution": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/26.png",
+          "usable": false
+        },
+        "3": {
+          "type": "MEURTRE",
+          "approachable": 0,
+          "duration": 3,
+          "gap": 0,
+          "usable": false
+        },
+        "4": {
+          "type": "CONSOMMABLE",
+          "approachable": 1,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        }
       }
     },
     {
-      "id": 172,
-      "name": "Pichu",
-      "categorie": "5C",
+      "name": "Axoloto",
       "skills": {
-        "1": "test1",
-        "2": "test",
-        "3": "test",
-        "4": "test"
-      }
-    },
-    {
-      "id": 4,
-      "name": "Salamèche",
-      "categorie": "5C",
-      "skills": {
-        "1": "test1",
-        "2": "test",
-        "3": "test",
-        "4": "test"
-      }
-    },
-    {
-      "id": 128,
-      "name": "Tauros",
-      "categorie": "25C",
-      "skills": {
-        "1": "test1",
-        "2": "test",
-        "3": "test",
-        "4": "test"
-      }
-    },
-    {
-      "id": 128,
-      "name": "Dracaufeu",
-      "categorie": "25C",
-      "skills": {
-        "1": "test1",
-        "2": "test",
-        "3": "test",
-        "4": "test"
-      }
-    },
-    {
-      "id": 128,
-      "name": "Dialga",
-      "categorie": "25C",
-      "skills": {
-        "1": "test1",
-        "2": "test",
-        "3": "test",
-        "4": "test"
+        "1": {
+          "type": "BALISE",
+          "approachable": 0,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        },
+        "2": {
+          "type": "TELEPORTATION",
+          "approachable": 0,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        },
+        "3": {
+          "type": "CONSOMMABLE",
+          "approachable": 1,
+          "duration": 1,
+          "gap": 6,
+          "usable": false
+        },
+        "4": {
+          "type": "MEURTRE",
+          "approachable": 0,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        }
       }
     }
   ]

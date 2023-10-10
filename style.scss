@@ -39,6 +39,7 @@ body {
                 gap: 25px;
                 justify-content: center;
                 align-items: center;
+                flex-wrap: wrap;
             
                 > .pokemonSlot {
                     width: 50px;
@@ -56,6 +57,40 @@ body {
                     &.focused {
                         border: 4px solid orange !important;
                         background-color: white;
+                    }
+                }
+            }
+
+            &Played {
+                display: none;
+                flex-direction: column;
+                align-items: center;
+
+                .game {
+                    display: flex;
+                    justify-content: center;
+                    width: 100%;
+                    border: 2px solid black;
+                    height: auto;
+                    background-color: grey;
+                }
+
+                .playerOne, .playerTwo {
+                    display: flex;
+                    flex: 0 50%;
+                    justify-content: center;
+                    flex-direction: column;
+                    align-items: center;
+
+                    > div {
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    img {
+                        width: 75px;
+                        height: 100%;
+                        object-fit: contain;
                     }
                 }
             }

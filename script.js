@@ -39,6 +39,7 @@ function assignPokemonToSlot() {
                             name: pokemonDatas[index].name,
                             skills: pokemonDatas[index].skills,
                             image: pokemonImg.src,
+                            normalSkillDeck: pokemonDatas[index].normalSkillDeck
                         });
                     } else if (slotIndex >= 7 && slotIndex <= 12) {
                         // playerTwoDeck.push(pokemonDatas[index].name);
@@ -47,6 +48,7 @@ function assignPokemonToSlot() {
                             name: pokemonDatas[index].name,
                             skills: pokemonDatas[index].skills,
                             image: pokemonImg.src,
+                            normalSkillDeck: pokemonDatas[index].normalSkillDeck
                         });
                     }
 
@@ -83,6 +85,7 @@ function assignPokemonToSlot() {
                                 name: pokemonDatas[currentSlot].name,
                                 skills: pokemonDatas[currentSlot].skills,
                                 image: pokemonDatas[currentSlot].image,
+                                normalSkillDeck: pokemonDatas[index].normalSkillDeck
                             };
                         } else if (index >= 6 && index <= 11) {
                             playerTwoDeck[index - 6] = {
@@ -90,6 +93,7 @@ function assignPokemonToSlot() {
                                 name: pokemonDatas[currentSlot].name,
                                 skills: pokemonDatas[currentSlot].skills,
                                 image: pokemonDatas[currentSlot].image,
+                                normalSkillDeck: pokemonDatas[index].normalSkillDeck
                             };
                         }
                     }
@@ -159,7 +163,8 @@ function getPokemonsList() {
                         const pokemonInfo = {
                             name: data.name,
                             image: data.image,
-                            skills: pokemon.skills
+                            skills: pokemon.skills,
+                            normalSkillDeck: pokemon.normalSkillDeck
                         };
                         return pokemonInfo;
                     })
@@ -257,6 +262,7 @@ function previousTurn() {
 }
 
 const skillElements = [];
+const labelElements = [];
 const savedNextApproachable = {}; // Utiliser un objet au lieu d'un tableau
 
 function inform() {
@@ -266,18 +272,31 @@ function inform() {
         const pokemonContainer = document.createElement('div');
         const newPictures = document.createElement('img');
 
+        const allDeck = document.createElement('div');
+        allDeck.classList.add('allDeck');
+
+        const normalDeck = document.createElement('div');
+        normalDeck.classList.add('normalDeck');
+
         // ici on initialise si le skillElement n'existe pas
         if (!skillElements[indexProp]) {
             skillElements[indexProp] = [];
+        }
+
+        if (!labelElements[indexProp]) {
+            labelElements[indexProp] = [];
         }
 
         if (!existingPokemonContainer) {
             pokemonContainer.id = indexProp + 1;
             playerOne.appendChild(pokemonContainer);
             skillElements[indexProp] = [];
+            labelElements[indexProp] = [];
 
             newPictures.src = props['image'];
             pokemonContainer.appendChild(newPictures);
+            pokemonContainer.appendChild(allDeck);
+            allDeck.appendChild(normalDeck);
         }
 
         Object.keys(props['skills']).forEach((skill, index) => {
@@ -292,10 +311,16 @@ function inform() {
 
                 newLabel.innerText = skill;
 
-                pokemonContainer.appendChild(newLabel);
-                pokemonContainer.appendChild(newCheckbox);
+                normalDeck.appendChild(newLabel);
+                normalDeck.appendChild(newCheckbox);
 
                 skillElements[indexProp].push(newCheckbox);
+                labelElements[indexProp].push(newLabel);
+
+                if (index >= props['normalSkillDeck']) {
+                    skillElements[indexProp][index].style.display = "none";
+                    labelElements[indexProp][index].style.display = "none";
+                }
             }
 
             // Vérification des compétences ici
@@ -327,10 +352,20 @@ function inform() {
                 skillElements[indexProp][index].disabled = true;
 
                 // ici on retire l'image de l'évolution lorsque la duration de la compétence a été dépassée laissant juste le couldown bloquer la compétence
-                if (evolution && savedNextApproachable[indexProp][skill]) {
-                    const endOfDuration = savedNextApproachable[indexProp][skill][0];
+                if (evolution && evolution.name && savedNextApproachable[indexProp][skill]) {
+                    // savedNextApproachable contain nextApproachable variable and this contains duration, gap and turnCounter, delete gap from this to keep turnCounter and duration
+                    const endOfDuration = savedNextApproachable[indexProp][skill][0] - gap;
 
-                    if (turnCounter > (endOfDuration - gap) - 1) {
+                    if (turnCounter > endOfDuration - 1) {
+                        Object.keys(skillElements[indexProp]).forEach((skillInProp) => {
+                            if (skillInProp < props['normalSkillDeck']) {
+                                skillElements[indexProp][skillInProp].style.display = "";
+                                labelElements[indexProp][skillInProp].style.display = "";
+                            } else {
+                                skillElements[indexProp][skillInProp].style.display = "none";
+                                labelElements[indexProp][skillInProp].style.display = "none";
+                            }
+                        })
                         existingImg.src = props['image'];
                     }
                 }
@@ -353,9 +388,24 @@ function inform() {
                     if (!savedNextApproachable[indexProp][skill]) {
                         savedNextApproachable[indexProp][skill] = [];
                     }
-                    // a révoir car lien de l'image dans le pokemons.json pas ouf
-                    if (evolution) {
-                        existingImg.src = evolution;
+
+                    if (evolution && evolution.name) {
+                        Object.keys(skillElements[indexProp]).forEach((skillInProp) => {
+                            if (skillInProp < props['normalSkillDeck']) {
+                                skillElements[indexProp][skillInProp].style.display = "none";
+                                labelElements[indexProp][skillInProp].style.display = "none";
+                            } else {
+                                skillElements[indexProp][skillInProp].style.display = "";
+                                labelElements[indexProp][skillInProp].style.display = "";
+                            }
+                        })
+                        getPokemonsByApi(evolution.name).then(data => {
+                            return existingImg.src = data.image;
+                        })
+                        .catch(error => {
+                            console.error('Erreur lors de la récupération des données JSON :', error);
+                            throw error;
+                        });
                     }
 
                     savedNextApproachable[indexProp][skill].push(nextApproachable);

@@ -73,6 +73,10 @@ body main .pokemonPlayed .playerOne, body main .pokemonPlayed .playerTwo {
   flex-direction: column;
   align-items: center;
 }
+body main .pokemonPlayed .playerOne .allDeck, body main .pokemonPlayed .playerTwo .allDeck {
+  display: flex;
+  flex-direction: column;
+}
 body main .pokemonPlayed .playerOne > div, body main .pokemonPlayed .playerTwo > div {
   display: flex;
   align-items: center;
@@ -82,4 +86,8 @@ body main .pokemonPlayed .playerOne img, body main .pokemonPlayed .playerTwo img
   height: 100%;
   -o-object-fit: contain;
      object-fit: contain;
+}
+
+.animation-opacity {
+  transition: all 0.5s ease-in-out;
 }/*# sourceMappingURL=style.css.map */

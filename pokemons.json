@@ -1,9 +1,9 @@
 {
   "pokemons": [
     {
-      "id": 25,
       "name": "Pikachu",
       "categorie": "5C",
+      "normalSkillDeck": 4,
       "skills": {
         "1": {
           "type": "CONSOMMABLE",
@@ -17,7 +17,9 @@
           "approachable": 7,
           "duration": 3,
           "gap": 7,
-          "evolution": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/26.png",
+          "evolution": {
+            "name": "Raichu"
+          },
           "usable": false
         },
         "3": {
@@ -33,11 +35,41 @@
           "duration": 0,
           "gap": 0,
           "usable": false
+        },
+        "5": {
+          "type": "RELANCE",
+          "approachable": 0,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        },
+        "6": {
+          "type": "TELEPORTATION",
+          "approachable": 0,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        },
+        "7": {
+          "type": "MEURTRE",
+          "approachable": 0,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        },
+        "8": {
+          "type": "TELEPORTATION",
+          "approachable": 0,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
         }
       }
     },
     {
       "name": "Axoloto",
+      "categorie": "5C",
+      "normalSkillDeck": 4,
       "skills": {
         "1": {
           "type": "BALISE",
@@ -62,6 +94,72 @@
         },
         "4": {
           "type": "MEURTRE",
+          "approachable": 0,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        }
+      }
+    },
+    {
+      "name": "Salamèche",
+      "categorie": "5C",
+      "normalSkillDeck": 4,
+      "skills": {
+        "1": {
+          "type": "TELEPORTATION",
+          "approachable": 0,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        },
+        "2": {
+          "type": "MEURTRE",
+          "approachable": 1,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        },
+        "3": {
+          "type": "TELEPORTATION",
+          "approachable": 1,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        },
+        "4": {
+          "type": "CONSOMMABLE",
+          "approachable": 7,
+          "duration": 3,
+          "gap": 7,
+          "evolution": {
+            "name": "Reptincel"
+          },
+          "usable": false
+        },
+        "5": {
+          "type": "TELEPORTATION",
+          "approachable": 0,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        },
+        "6": {
+          "type": "MEURTRE",
+          "approachable": 0,
+          "duration": 0,
+          "gap": 0,
+          "usable": false
+        },
+        "7": {
+          "type": "DEPLACEMENT",
+          "approachable": 0,
+          "duration": 6,
+          "gap": 4,
+          "usable": false
+        },
+        "8": {
+          "type": "TELEPORTATION",
           "approachable": 0,
           "duration": 0,
           "gap": 0,

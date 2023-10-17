@@ -1,8 +1,7 @@
 const pokemonsList = document.querySelector('.pokemonSelect');
 const pokemonsChoices = document.querySelector('.pokemonChoice');
 const slots = document.querySelectorAll('.pokemonSlot');
-let slotIndex = 0;
-let currentSlot = -1;
+
 let selectedPokemonIndex = -1;
 let playerOneDeck = [];
 let playerTwoDeck = [];
@@ -16,94 +15,57 @@ const playerTwo = document.querySelector('.playerTwo');
 const buttonNextTurn = document.querySelector('.nextTurn');
 const buttonPreviousTurn = document.querySelector('.previousTurn');
 const submitPlayerOneAction = document.querySelector('.submitPlayerOneAction');
+const submitPlayerTwoAction = document.querySelector('.submitPlayerTwoAction');
 
-// this function assign pokemon for each slot
 function assignPokemonToSlot() {
     getPokemonsList().then(result => {
         const pokemonDatas = result.pokemonData;
         const pokemonsImages = createButtonAndImgFromPokemon(pokemonDatas);
-        
-        pokemonsImages.forEach((pokemonImg, index) => {
-            pokemonImg.addEventListener('click', () => {
-                if (slotIndex < slots.length && slots[slotIndex].classList.contains('focused')) {
-                    const newImage = document.createElement('img');
-                    newImage.src = pokemonImg.src; // Set the src attribute
-                    slots[slotIndex].appendChild(newImage); //
-                    slots[slotIndex].setAttribute('state', 'completed');
-                    slotIndex++;
 
-                    // save player 1 and player 2 deck for the party
-                    if (slotIndex >= 1 && slotIndex <= 6) {
-                        playerOneDeck.push({
-                            index: slotIndex,
-                            name: pokemonDatas[index].name,
-                            skills: pokemonDatas[index].skills,
-                            image: pokemonImg.src,
-                            normalSkillDeck: pokemonDatas[index].normalSkillDeck
-                        });
-                    } else if (slotIndex >= 7 && slotIndex <= 12) {
-                        // playerTwoDeck.push(pokemonDatas[index].name);
-                        playerTwoDeck.push({
-                            index: slotIndex,
-                            name: pokemonDatas[index].name,
-                            skills: pokemonDatas[index].skills,
-                            image: pokemonImg.src,
-                            normalSkillDeck: pokemonDatas[index].normalSkillDeck
-                        });
-                    }
+        let selectedSlotIndex = 0;
 
-                    // it's for focused next slot
-                    if (slotIndex < slots.length && !slots[slotIndex].hasAttribute('state', 'completed')) {
-                        slots[slotIndex - 1].classList.remove('focused');
-                        slots[slotIndex].classList.add('focused');
-                    } else {
-                        // a revoir car il saute bien d'un cran quand il y a un slot deja rempli mais pas deux ni trois
-                        slots[slotIndex - 1].classList.remove('focused');
-                        slots[slotIndex + 1].classList.add('focused');
-                    }
-                } else {
-                    // assign the current index to slot
-                    currentSlot = index;
-                }
+        slots.forEach((slot, index) => {
+            slot.addEventListener('click', () => {
+                slots.forEach((s) => s.classList.remove('focused'));
+                slot.classList.add('focused');
+                
+                selectedSlotIndex = index;
             });
         });
 
-        slots.forEach((slot, index) => {
-            slot.addEventListener('click', () => {                
-                // if currentSlot is not defined (pokemon never selected for this slot)
-                if (currentSlot !== -1) {
-                    const newImage = document.createElement('img');
-                    const oldImage = slot.querySelector('img');
-
+        pokemonsImages.forEach((pokemonImg, pokemonIndex) => {
+            pokemonImg.addEventListener('click', () => {
+                const slot = slots[selectedSlotIndex];
+                const oldImage = slot.querySelector('img');
+        
+                if (slots[selectedSlotIndex].classList.contains('focused')) {
                     if (oldImage) {
-                        slot.removeChild(oldImage);
-
-                        // replace old Pokemon by new Pokemon and update deck array
-                        if (index >= 0 && index <= 5) {
-                            playerOneDeck[index] = {
-                                index: currentSlot, 
-                                name: pokemonDatas[currentSlot].name,
-                                skills: pokemonDatas[currentSlot].skills,
-                                image: pokemonDatas[currentSlot].image,
-                                normalSkillDeck: pokemonDatas[index].normalSkillDeck
-                            };
-                        } else if (index >= 6 && index <= 11) {
-                            playerTwoDeck[index - 6] = {
-                                index: currentSlot, 
-                                name: pokemonDatas[currentSlot].name,
-                                skills: pokemonDatas[currentSlot].skills,
-                                image: pokemonDatas[currentSlot].image,
-                                normalSkillDeck: pokemonDatas[index].normalSkillDeck
-                            };
-                        }
+                        oldImage.remove();
                     }
-                    newImage.src = pokemonsImages[currentSlot].src; // Set the src attribute
-                    slot.appendChild(newImage); // Append the image to the slot
+        
+                    const newImage = document.createElement('img');
+                    newImage.src = pokemonImg.src;
+                    slot.appendChild(newImage);
                     slot.setAttribute('state', 'completed');
-                    // it's for clear currentSlot value (the value is keep and she was assigned to other slot not defined)
-                    currentSlot = -1;
-                } else {
-                    // récupérer l'index du pokemon selectionner et ajouter a playerOneDeck et playerTwoDeck les pokemons inséres dans les slots
+        
+                    // playerOneDeck is for index between 0 and 5 and playerTwo is for index between 6 and 11
+                    const playerDeck = (selectedSlotIndex >= 6 && selectedSlotIndex <= 11) ? playerTwoDeck : playerOneDeck;
+
+                    playerDeck[selectedSlotIndex] = {
+                        // on associe l'index courant du slot dans le tableau playerDeck
+                        index: selectedSlotIndex,
+                        name: pokemonDatas[pokemonIndex].name,
+                        skills: pokemonDatas[pokemonIndex].skills,
+                        image: pokemonDatas[pokemonIndex].image,
+                        normalSkillDeck: pokemonDatas[pokemonIndex].normalSkillDeck
+                    };
+        
+                    // select next slot when the current slot is completed
+                    if (selectedSlotIndex < slots.length - 1) {
+                        slots[selectedSlotIndex].classList.remove('focused');
+                        selectedSlotIndex++;
+                        slots[selectedSlotIndex].classList.add('focused');
+                    }
                 }
             });
         });
@@ -111,8 +73,10 @@ function assignPokemonToSlot() {
     .catch(error => {
         // Gérez l'erreur ici
         console.error('Erreur lors de la récupération des éléments img :', error);
-    })
+    });
 }
+
+
 
 function createButtonAndImgFromPokemon(pokemonsData = []) { // Renommez le paramètre
     const pokemonsImages = []; // Renommez la variable locale
@@ -190,6 +154,7 @@ function getPokemonsList() {
             throw error;
         });
 }
+
 function getPokemonsByJson() {
     return fetch('pokemons.json')
         .then(response => {
@@ -228,22 +193,24 @@ function hasAttribute() {
     return true;
 }
 
-function startGame() {
-    pokemonsSubmit.querySelector('button').addEventListener('click', () => {
-        slots.forEach(slot => {
-            if (hasAttribute()) {
-                pokemonsList.remove();
-                pokemonsChoices.remove();
-                pokemonsSubmit.remove();
-                pokemonsPlayed.style.display = "flex";
-                localStorage.setItem(1, JSON.stringify([playerOneDeck]));
-                localStorage.setItem(2, JSON.stringify(playerTwoDeck));
-                gameStarted = true;
-                inform();
-            } else {
-                console.log("Votre deck n'est pas fini !");
-            }
-        })
+async function startGame() {
+    pokemonsSubmit.querySelector('button').addEventListener('click', async () => {
+        if (hasAttribute()) {
+            pokemonsList.remove();
+            pokemonsChoices.remove();
+            pokemonsSubmit.remove();
+            pokemonsPlayed.style.display = "flex";
+            // localStorage.setItem(1, JSON.stringify([playerOneDeck]));
+            // localStorage.setItem(2, JSON.stringify(playerTwoDeck));
+            gameStarted = true;
+            const promise1 = inform(playerOneDeck, playerOne);
+            const promise2 = inform(playerTwoDeck, playerTwo);
+
+            return await Promise.all([promise1, promise2]);
+
+        } else {
+            console.log("Votre deck n'est pas fini !");
+        }
     })
 }
 
@@ -265,9 +232,10 @@ const skillElements = [];
 const labelElements = [];
 const savedNextApproachable = {}; // Utiliser un objet au lieu d'un tableau
 
-function inform() {
+function inform(playerDeck, playerContainer) {
     // Initialisation des tableaux skillElements pour chaque Pokémon
-    playerOneDeck.forEach((props, indexProp) => {
+    return new Promise(resolve => {
+        playerDeck.forEach((props, indexProp) => {
         const existingPokemonContainer = document.querySelector(`div[id="${indexProp + 1}"]`);
         const pokemonContainer = document.createElement('div');
         const newPictures = document.createElement('img');
@@ -289,7 +257,7 @@ function inform() {
 
         if (!existingPokemonContainer) {
             pokemonContainer.id = indexProp + 1;
-            playerOne.appendChild(pokemonContainer);
+            playerContainer.appendChild(pokemonContainer);
             skillElements[indexProp] = [];
             labelElements[indexProp] = [];
 
@@ -415,7 +383,10 @@ function inform() {
                 }
             }
         });
+
+        resolve();
     });
+    })
 }
 
 function main() {
@@ -436,5 +407,10 @@ buttonPreviousTurn.addEventListener('click', () => {
 submitPlayerOneAction.addEventListener('click', () => {
     // on met le nextTurn() en premier car sinon lorsqu'une compétence est accessible au bout de 1 tour, elle est incrémentée avant et donc n'est pas respectée
     nextTurn();
-    inform();
+    inform(playerOneDeck, playerOne);
+})
+
+submitPlayerTwoAction.addEventListener('click', () => {
+    nextTurn();
+    inform(playerTwoDeck, playerTwo);
 })

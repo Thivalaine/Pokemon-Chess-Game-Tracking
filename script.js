@@ -14,8 +14,7 @@ const playerOne = document.querySelector('.playerOne');
 const playerTwo = document.querySelector('.playerTwo');
 const buttonNextTurn = document.querySelector('.nextTurn');
 const buttonPreviousTurn = document.querySelector('.previousTurn');
-const submitPlayerOneAction = document.querySelector('.submitPlayerOneAction');
-const submitPlayerTwoAction = document.querySelector('.submitPlayerTwoAction');
+const submitPlayersAction = document.querySelector('.submitPlayersAction');
 
 function assignPokemonToSlot() {
     getPokemonsList().then(result => {
@@ -219,6 +218,7 @@ function turnInit() {
 }
 
 function nextTurn() {
+    onlyOnePokemonDeckPlayed(playerOne);
     turnCounter = parseInt(turn.innerText) + 1
     turn.innerText = turnCounter;
 }
@@ -389,6 +389,36 @@ function inform(playerDeck, playerContainer) {
     })
 }
 
+function isPlayed(playerPlayContainer) {
+    const playerInputs =  Array.from(playerPlayContainer.querySelectorAll('input'));
+    const hasCheckedInput = playerInputs.some(playerInput => playerInput.checked);
+
+    if (hasCheckedInput) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function onlyOnePokemonDeckPlayed(playerPlayContainer) {
+    const allPlayerInputs = playerPlayContainer.querySelectorAll('input');
+    let firstInputParent = null;
+    let canPlay = true;
+
+    allPlayerInputs.forEach(playerInput => {
+        if (playerInput.checked) {
+            if (firstInputParent === null) {
+                firstInputParent = playerInput.parentElement.parentElement.parentElement;
+            } else if (playerInput.parentElement.parentElement.parentElement !== firstInputParent) {
+                console.log('Vous ne pouvez pas jouer plusieurs Pokémon à la fois !');
+                canPlay = false;
+            }
+        }
+    });
+
+    return canPlay;
+}
+
 function main() {
     assignPokemonToSlot();
     getFocusedSlot();
@@ -397,20 +427,30 @@ function main() {
 }
 
 main();
-buttonNextTurn.addEventListener('click', () => {
-    nextTurn();
-})
-buttonPreviousTurn.addEventListener('click', () => {
-    previousTurn();
-})
 
-submitPlayerOneAction.addEventListener('click', () => {
-    // on met le nextTurn() en premier car sinon lorsqu'une compétence est accessible au bout de 1 tour, elle est incrémentée avant et donc n'est pas respectée
-    nextTurn();
-    inform(playerOneDeck, playerOne);
-})
+// buttonNextTurn.addEventListener('click', () => {
+//     nextTurn();
+// })
+// buttonPreviousTurn.addEventListener('click', () => {
+//     previousTurn();
+// })
 
-submitPlayerTwoAction.addEventListener('click', () => {
-    nextTurn();
-    inform(playerTwoDeck, playerTwo);
-})
+submitPlayersAction.addEventListener('click', () => {
+    if (!isPlayed(playerOne) && !isPlayed(playerTwo)) {
+        console.log("Les deux joueurs n'ont pas joué de compétence !");
+    } else if (!isPlayed(playerOne)) {
+        console.log("Le joueur 1 n'a pas joué de compétence !");
+    } else if (!isPlayed(playerTwo)) {
+        console.log("Le joueur 2 n'a pas joué de compétence !");
+    } else {
+        if (onlyOnePokemonDeckPlayed(playerOne) && onlyOnePokemonDeckPlayed(playerTwo)) {
+            nextTurn();
+            const promise1 = inform(playerOneDeck, playerOne);
+            const promise2 = inform(playerTwoDeck, playerTwo);
+    
+            return Promise.all([promise1, promise2]).then(() => {
+                // Traitement après la résolution des promesses
+            });
+        }    
+    }
+});

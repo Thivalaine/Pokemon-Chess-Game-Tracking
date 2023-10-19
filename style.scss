@@ -5,12 +5,27 @@
 }
 
 body {
-    padding: 5% 15%;
+    nav {    
+        display: flex;
+        justify-content: center;
+        background-color: lightgray;
+        padding: 15px 0;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+
+        img {
+            border: 2px solid ghostwhite;
+            border-radius: 100px;
+            padding: 15px;
+            background: firebrick;
+            box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+        }
+    }
 
     main {
         display: flex;
         flex-direction: column;
         gap: 50px;
+        padding: 5% 15%;
 
         .pokemon {
             &Select {
@@ -21,7 +36,7 @@ body {
                     flex: 0 5%;
             
                     img {
-                        width: 50px;
+                        width: 75px;
                         height: 100%;
                         object-fit: contain;
                     }

@@ -3,7 +3,6 @@
     {
       "name": "Pikachu",
       "categorie": "5C",
-      "normalSkillDeck": 4,
       "skills": {
         "1": {
           "type": "CONSOMMABLE",

@@ -272,6 +272,7 @@ function inform(playerDeck, playerContainer) {
             const existingImg = document.querySelector(`div[id="${indexProp + 1}"] img`);
             const newCheckbox = document.createElement('input');
             const newLabel = document.createElement('label');
+            const normalSkillDeck = props['normalSkillDeck'] ? props['normalSkillDeck'] : 4;
 
             if (!existingCheckbox) {
                 newCheckbox.type = "checkbox";
@@ -285,13 +286,15 @@ function inform(playerDeck, playerContainer) {
                 skillElements[indexProp].push(newCheckbox);
                 labelElements[indexProp].push(newLabel);
 
-                if (index >= props['normalSkillDeck']) {
+                if (index >= normalSkillDeck) {
                     skillElements[indexProp][index].style.display = "none";
                     labelElements[indexProp][index].style.display = "none";
                 }
             }
 
-            // Vérification des compétences ici
+            // different categories of Pokemon deck
+
+
             const approachable = props['skills'][skill]['approachable'];
             const gap = props['skills'][skill]['gap'];
             const duration = props['skills'][skill]['duration'];
@@ -326,7 +329,7 @@ function inform(playerDeck, playerContainer) {
 
                     if (turnCounter > endOfDuration - 1) {
                         Object.keys(skillElements[indexProp]).forEach((skillInProp) => {
-                            if (skillInProp < props['normalSkillDeck']) {
+                            if (skillInProp < normalSkillDeck) {
                                 skillElements[indexProp][skillInProp].style.display = "";
                                 labelElements[indexProp][skillInProp].style.display = "";
                             } else {
@@ -359,7 +362,7 @@ function inform(playerDeck, playerContainer) {
 
                     if (evolution && evolution.name) {
                         Object.keys(skillElements[indexProp]).forEach((skillInProp) => {
-                            if (skillInProp < props['normalSkillDeck']) {
+                            if (skillInProp < normalSkillDeck) {
                                 skillElements[indexProp][skillInProp].style.display = "none";
                                 labelElements[indexProp][skillInProp].style.display = "none";
                             } else {
@@ -419,6 +422,30 @@ function onlyOnePokemonDeckPlayed(playerPlayContainer) {
     return canPlay;
 }
 
+function checkNoDuplicateTypeUsed(playerDeck, playerPlayContainer) {
+    const allPlayerInputs = playerPlayContainer.querySelectorAll('input');
+    let canPlay = true;
+    let types = [];
+
+    allPlayerInputs.forEach(playerInput => {
+        if (playerInput.checked) {
+            // get pokemon index from playerDeck "div" id - 1 because index start at 0 and id at 1
+            const pokemonIndex = playerInput.parentElement.parentElement.parentElement.id - 1;
+            // get skill type from playerDeck with pokemonIndex and playerInput value (skill name) "playerInput.value" is the skill name from playerDeck array
+            const skillType = playerDeck[pokemonIndex].skills[playerInput.value].type;
+
+            if (types.includes(skillType)) {
+                console.log('Vous ne pouvez pas jouer le même type de compétence !');
+                canPlay = false;
+            } else {
+                types.push(skillType);
+            }
+        }
+    });
+
+    return canPlay;
+}
+
 function main() {
     assignPokemonToSlot();
     getFocusedSlot();
@@ -444,13 +471,15 @@ submitPlayersAction.addEventListener('click', () => {
         console.log("Le joueur 2 n'a pas joué de compétence !");
     } else {
         if (onlyOnePokemonDeckPlayed(playerOne) && onlyOnePokemonDeckPlayed(playerTwo)) {
-            nextTurn();
-            const promise1 = inform(playerOneDeck, playerOne);
-            const promise2 = inform(playerTwoDeck, playerTwo);
-    
-            return Promise.all([promise1, promise2]).then(() => {
-                // Traitement après la résolution des promesses
-            });
+            if (checkNoDuplicateTypeUsed(playerOneDeck, playerOne) && checkNoDuplicateTypeUsed(playerTwoDeck, playerTwo)) {
+                nextTurn();
+                const promise1 = inform(playerOneDeck, playerOne);
+                const promise2 = inform(playerTwoDeck, playerTwo);
+        
+                return Promise.all([promise1, promise2]).then(() => {
+                    // Traitement après la résolution des promesses
+                });
+            }
         }    
     }
 });

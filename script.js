@@ -15,6 +15,8 @@ const playerTwo = document.querySelector('.playerTwo');
 const buttonNextTurn = document.querySelector('.nextTurn');
 const buttonPreviousTurn = document.querySelector('.previousTurn');
 const submitPlayersAction = document.querySelector('.submitPlayersAction');
+const notificationsContainer = document.querySelector('.notificationsContainer');
+const pokemonEvolutionAnimation = "pokemonEvolution";
 
 function assignPokemonToSlot() {
     getPokemonsList().then(result => {
@@ -208,6 +210,7 @@ async function startGame() {
             return await Promise.all([promise1, promise2]);
 
         } else {
+            alert('Votre deck n\'est pas fini !');
             console.log("Votre deck n'est pas fini !");
         }
     })
@@ -218,7 +221,6 @@ function turnInit() {
 }
 
 function nextTurn() {
-    onlyOnePokemonDeckPlayed(playerOne);
     turnCounter = parseInt(turn.innerText) + 1
     turn.innerText = turnCounter;
 }
@@ -293,8 +295,6 @@ function inform(playerDeck, playerContainer) {
             }
 
             // different categories of Pokemon deck
-
-
             const approachable = props['skills'][skill]['approachable'];
             const gap = props['skills'][skill]['gap'];
             const duration = props['skills'][skill]['duration'];
@@ -337,12 +337,22 @@ function inform(playerDeck, playerContainer) {
                                 labelElements[indexProp][skillInProp].style.display = "none";
                             }
                         })
-                        existingImg.src = props['image'];
+
+                        setEvolutionAnimation(existingImg, props['image'], pokemonEvolutionAnimation, indexProp + 1);
                     }
                 }
             } else {
                 // Vérifier si la compétence a été utilisée
                 if (skillElements[indexProp][index].checked) {
+                    const nextTurn = turnCounter + duration + gap;
+                    const newTurnContainer = document.createElement('div');
+                    const newNotification = document.createElement('p');
+
+                    newNotification.innerText = `${props['name']} a utilisé la compétence ${skill}, prochaine utilisation au tour ${nextTurn}`;
+                    newTurnContainer.appendChild(newNotification);
+
+                    notificationsContainer.appendChild(newTurnContainer);
+
                     // on supprime les compétences précédemment stockées pour en placer de nouvelles
                     if (savedNextApproachable[indexProp][skill]) {
                         savedNextApproachable[indexProp][skill].shift();
@@ -371,7 +381,7 @@ function inform(playerDeck, playerContainer) {
                             }
                         })
                         getPokemonsByApi(evolution.name).then(data => {
-                            return existingImg.src = data.image;
+                            return setEvolutionAnimation(existingImg, data.image, pokemonEvolutionAnimation, indexProp + 1);
                         })
                         .catch(error => {
                             console.error('Erreur lors de la récupération des données JSON :', error);
@@ -390,6 +400,15 @@ function inform(playerDeck, playerContainer) {
         resolve();
     });
     })
+}
+
+function setEvolutionAnimation(imgContainer, imgData, animationClassName, actualDivIndex) {
+    imgContainer.remove();
+    const imgRemplaced = document.createElement('img');
+    imgRemplaced.src = imgData;
+    imgRemplaced.classList.add(animationClassName);
+    const newImg = document.querySelector(`div[id="${actualDivIndex}"]`);
+    newImg.appendChild(imgRemplaced);
 }
 
 function isPlayed(playerPlayContainer) {
@@ -413,6 +432,7 @@ function onlyOnePokemonDeckPlayed(playerPlayContainer) {
             if (firstInputParent === null) {
                 firstInputParent = playerInput.parentElement.parentElement.parentElement;
             } else if (playerInput.parentElement.parentElement.parentElement !== firstInputParent) {
+                alert('Vous ne pouvez pas jouer plusieurs Pokémon à la fois !')
                 console.log('Vous ne pouvez pas jouer plusieurs Pokémon à la fois !');
                 canPlay = false;
             }
@@ -464,11 +484,14 @@ main();
 
 submitPlayersAction.addEventListener('click', () => {
     if (!isPlayed(playerOne) && !isPlayed(playerTwo)) {
+        alert('Les deux joueurs n\'ont pas joué de compétence !');
         console.log("Les deux joueurs n'ont pas joué de compétence !");
     } else if (!isPlayed(playerOne)) {
+        alert('Le joueur 1 n\'a pas joué de compétence !')
         console.log("Le joueur 1 n'a pas joué de compétence !");
     } else if (!isPlayed(playerTwo)) {
         console.log("Le joueur 2 n'a pas joué de compétence !");
+        alert('Le joueur 2 n\'a pas joué de compétence !')
     } else {
         if (onlyOnePokemonDeckPlayed(playerOne) && onlyOnePokemonDeckPlayed(playerTwo)) {
             if (checkNoDuplicateTypeUsed(playerOneDeck, playerOne) && checkNoDuplicateTypeUsed(playerTwoDeck, playerTwo)) {
